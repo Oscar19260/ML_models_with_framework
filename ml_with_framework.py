@@ -11,6 +11,9 @@ from sklearn.model_selection import train_test_split #get a train and test as pa
 from sklearn.linear_model import LogisticRegression #framework to make logistic regression
 from sklearn.metrics import classification_report #generate report
 from sklearn.model_selection import learning_curve
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import confusion_matrix
+
 # Ignoring warnings generated
 import warnings
 warnings.filterwarnings("ignore")
@@ -36,9 +39,12 @@ if __name__ == '__main__':
     print(lg.intercept_) # This is the bias value
 
     y_pred = lg.predict(X_test)
+    y_predt = lg.predict(X_train)
     target = ['Cammeo', 'Osmancik']
     print(classification_report(y_test, y_pred, target_names=target))
     print(f'Accuracy of the logistic regression classifier for test is: {lg.score(X_test, y_test)}')
+    print(f'Error of the logistic regression classifier for test is: {mean_squared_error(y_pred, y_test)}')
+    print(f'Error of the logistic regression classifier for train is: {mean_squared_error(y_predt, y_train)}')
     print('---------------------------------------------------------------------------------------')
 
     ######################################################################################
@@ -46,14 +52,16 @@ if __name__ == '__main__':
     lg_2 = LogisticRegression(solver='lbfgs', penalty='none', max_iter=5000)
     lg_2 = lg_2.fit(X_train, y_train)
     y_pred2 = lg_2.predict(X_test)
-     # Get coeficients
+    y_pred2t = lg_2.predict(X_train)
+    # Get coeficients
     print(lg_2.coef_) # This is the parameter value
     # Get interceptions
     print(lg_2.intercept_) # This is the bias value
     target = ['Cammeo', 'Osmancik']
     print(classification_report(y_test, y_pred2, target_names=target))
-    print(f'Scaled logistic legression accuracy for test is: {lg_2.score(X_test, y_test)}')
-
+    print(f'Improved logistic legression accuracy for test is: {lg_2.score(X_test, y_test)}')
+    print(f'Error of the improved logistic regression classifier for test is: {mean_squared_error(y_pred2, y_test)}')
+    print(f'Error of the improved logistic regression classifier for train is: {mean_squared_error(y_pred2t, y_train)}')
     ######################################################################################
     # Validation
     print('---------------------------------------------------------------------------------------')
@@ -70,6 +78,10 @@ if __name__ == '__main__':
     test_mean = np.mean(test_scores, axis=1)
     test_std = np.std(test_scores, axis=1)
 
+    mat1 = confusion_matrix(y_test, y_pred)
+    sns.heatmap(mat1, annot=True, cmap='Blues')
+    plt.show()
+
     plt.plot(train_sizes, train_mean, "o-", color="r", label='Trainig score')
     plt.plot(train_sizes, test_mean, "o-", color="g", label='Cross-validation score')
     plt.legend(loc="best")
@@ -85,14 +97,14 @@ if __name__ == '__main__':
     # Mean and STD of the test scores
     test_mean = np.mean(test_scores, axis=1)
     test_std = np.std(test_scores, axis=1)
+    
+    mat2 = confusion_matrix(y_test, y_pred2)
+    sns.heatmap(mat2, annot=True, cmap='Blues')
+    plt.show()
 
     plt.plot(train_sizes, train_mean, "o-", color="r", label='Trainig score')
     plt.plot(train_sizes, test_mean, "o-", color="g", label='Cross-validation score')
     plt.legend(loc="best")
     plt.grid()
     plt.show()
-
-
-
-    
 
