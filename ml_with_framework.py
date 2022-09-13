@@ -12,6 +12,7 @@ from sklearn.linear_model import LogisticRegression #framework to make logistic 
 from sklearn.metrics import classification_report #generate report
 from sklearn.model_selection import learning_curve
 from sklearn.metrics import mean_squared_error
+from sklearn.utils import shuffle
 from sklearn.metrics import confusion_matrix
 
 # Ignoring warnings generated
@@ -25,6 +26,8 @@ if __name__ == '__main__':
 
     df['Class'] = df.Class.replace('Cammeo', 1)   # 1 for Cammeo class
     df['Class'] = df.Class.replace('Osmancik', 2) # 2 for Osmancik class
+
+    df = shuffle(df)
 
     X = df.iloc[:, 0:-1]
     y = df.iloc[:, -1]
